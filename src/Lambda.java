@@ -14,8 +14,8 @@ public class Lambda {
         roster.add(new Person(32, Person.Sex.MALE, "Jack4"));
 
 
-        Person.printPersonsOlderThan(roster, 20);
-        Person.printPersonWithinAgeRange(roster, 20, 25);
+        Person.printPersonsOlderThan(roster);
+        Person.printPersonWithinAgeRange(roster);
         Person.printPerson(roster, new CheckPersonForSelectiveService());
 //        Person.printPerson(roster, new CheckPerson() {
 //            @Override
@@ -91,18 +91,18 @@ class Person {
      what if you wanted to print members younger than a certain age, for example?*/
 
 
-    static void printPersonsOlderThan(List<Person> roster, int age) {
+    static void printPersonsOlderThan(List<Person> roster) {
         for (Person person : roster) {
-            if (person.getAge() >= age)
+            if (person.getAge() >= 20)
                 person.printPerson();
         }
     }
 
     /*Create More Generalized Search Methods*/
-    static void printPersonWithinAgeRange(List<Person> roster, int low, int high) {
+    static void printPersonWithinAgeRange(List<Person> roster) {
         for (Person person : roster) {
-            if (person.getAge() <= high
-                    && person.getAge() >= low)
+            if (person.getAge() <= 25
+                    && person.getAge() >= 20)
                 person.printPerson();
         }
     }
