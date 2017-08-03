@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Lambda {
     public static void main(String[] args) {
@@ -10,24 +13,48 @@ public class Lambda {
         roster.add(new Person(25, Person.Sex.MALE, "Jack3"));
         roster.add(new Person(32, Person.Sex.MALE, "Jack4"));
 
-//        for (Person p : roster)
-//            p.printPerson();
 
-//        Person.printPersonsOlderThan(roster, 20);
-//        Person.printPersonWithinAgeRange(roster, 20, 25);
+        Person.printPersonsOlderThan(roster, 20);
+        Person.printPersonWithinAgeRange(roster, 20, 25);
         Person.printPerson(roster, new CheckPersonForSelectiveService());
-        Person.printPerson(roster, new CheckPerson() {
-            @Override
-            public boolean test(Person person) {
-                return person.getGender()== Person.Sex.MALE
-                        &&person.getAge()>=20
-                        &&person.getAge()<=25;
-            }
-        });
-        Person.printPerson(roster, (person -> person.getGender()==Person.Sex.MALE
-        &&person.getAge()<=25
-        &&person.getAge()>=20));
+//        Person.printPerson(roster, new CheckPerson() {
+//            @Override
+//            public boolean test(Person person) {
+//                return person.getGender() == Person.Sex.MALE
+//                        && person.getAge() >= 20
+//                        && person.getAge() <= 25;
+//            }
+//        });
+        Person.printPerson(roster, (person -> person.getGender() == Person.Sex.MALE
+                && person.getAge() <= 25
+                && person.getAge() >= 20));
+
+        Person.printPersonWithPredicate(roster, (person -> person.getGender() == Person.Sex.MALE
+                && person.getAge() <= 25
+                && person.getAge() >= 20));
+
+        Person.processPersons(roster,
+                person -> person.getGender() == Person.Sex.MALE
+                        && person.getAge() >= 20
+                        && person.getAge() <= 25,
+                person -> person.printPerson());
+
+        Person.processPersonsWithFunction(roster,
+                person -> person.getGender() == Person.Sex.MALE
+                        && person.getAge() >= 20
+                        && person.getAge() <= 25,
+                person -> person.getName(),
+                name -> System.out.println(name));
+
+        Person.processElements(roster,
+                p -> p.getGender() == Person.Sex.MALE
+                        && p.getAge() >= 20
+                        && p.getAge() <= 25,
+                person -> person.getName(),
+                s -> System.out.println(s));
     }
+
+
 }
 
 class Person {
@@ -87,12 +114,58 @@ class Person {
                 person.printPerson();
     }
 
-    private void printPerson() {
+    static void printPersonWithPredicate(List<Person> roster, Predicate<Person> tester) {
+        for (Person person : roster)
+            if (tester.test(person))
+                person.printPerson();
+    }
+
+    static void processPersons(
+            List<Person> roster,
+            Predicate<Person> tester,
+            Consumer<Person> block) {
+        for (Person person : roster) {
+            if (tester.test(person))
+                block.accept(person);
+        }
+    }
+
+    static void processPersonsWithFunction(
+            List<Person> roster,
+            Predicate<Person> tester,
+            Function<Person, String> mapper,
+            Consumer<String> block) {
+        for (Person person : roster) {
+            if (tester.test(person)) {
+                String data = mapper.apply(person);
+                block.accept(data);
+            }
+        }
+    }
+
+    static <X, Y> void processElements(
+            Iterable<X> source,
+            Predicate<X> tester,
+            Function<X, Y> mapper,
+            Consumer<Y> block) {
+        for (X p : source)
+            if (tester.test(p)) {
+                Y y = mapper.apply(p);
+                block.accept(y);
+            }
+    }
+
+
+    String getName() {
+        return name;
+    }
+
+    void printPerson() {
         System.out.println("name : " + name + " age  : " + age);
     }
 }
 
-interface  CheckPerson {
+interface CheckPerson {
     boolean test(Person person);
 }
 
