@@ -37,21 +37,21 @@ public class Lambda {
                 person -> person.getGender() == Person.Sex.MALE
                         && person.getAge() >= 20
                         && person.getAge() <= 25,
-                person -> person.printPerson());
+                Person::printPerson);
 
         Person.processPersonsWithFunction(roster,
                 person -> person.getGender() == Person.Sex.MALE
                         && person.getAge() >= 20
                         && person.getAge() <= 25,
-                person -> person.getName(),
-                name -> System.out.println(name));
+                Person::getName,
+                System.out::println);
 
         Person.processElements(roster,
                 p -> p.getGender() == Person.Sex.MALE
                         && p.getAge() >= 20
                         && p.getAge() <= 25,
-                person -> person.getName(),
-                s -> System.out.println(s));
+                Person::getName,
+                System.out::println);
     }
 
 
