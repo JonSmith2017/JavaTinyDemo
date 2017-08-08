@@ -14,8 +14,8 @@ public class Lambda {
         roster.add(new Person(32, Person.Sex.MALE, "Jack4"));
 
 
-        Person.printPersonsOlderThan(roster);
-        Person.printPersonWithinAgeRange(roster);
+        Person.printPersonsOlderThan(roster, 20);
+        Person.printPersonWithinAgeRange(roster, 20, 25);
         Person.printPerson(roster, new CheckPersonForSelectiveService());
 //        Person.printPerson(roster, new CheckPerson() {
 //            @Override
@@ -37,21 +37,21 @@ public class Lambda {
                 person -> person.getGender() == Person.Sex.MALE
                         && person.getAge() >= 20
                         && person.getAge() <= 25,
-                Person::printPerson);
+                person -> person.printPerson());
 
         Person.processPersonsWithFunction(roster,
                 person -> person.getGender() == Person.Sex.MALE
                         && person.getAge() >= 20
                         && person.getAge() <= 25,
-                Person::getName,
-                System.out::println);
+                person -> person.getName(),
+                name -> System.out.println(name));
 
         Person.processElements(roster,
                 p -> p.getGender() == Person.Sex.MALE
                         && p.getAge() >= 20
                         && p.getAge() <= 25,
-                Person::getName,
-                System.out::println);
+                person -> person.getName(),
+                s -> System.out.println(s));
     }
 
 
@@ -91,18 +91,18 @@ class Person {
      what if you wanted to print members younger than a certain age, for example?*/
 
 
-    static void printPersonsOlderThan(List<Person> roster) {
+    static void printPersonsOlderThan(List<Person> roster, int age) {
         for (Person person : roster) {
-            if (person.getAge() >= 20)
+            if (person.getAge() >= age)
                 person.printPerson();
         }
     }
 
     /*Create More Generalized Search Methods*/
-    static void printPersonWithinAgeRange(List<Person> roster) {
+    static void printPersonWithinAgeRange(List<Person> roster, int low, int high) {
         for (Person person : roster) {
-            if (person.getAge() <= 25
-                    && person.getAge() >= 20)
+            if (person.getAge() <= high
+                    && person.getAge() >= low)
                 person.printPerson();
         }
     }
@@ -153,6 +153,14 @@ class Person {
                 Y y = mapper.apply(p);
                 block.accept(y);
             }
+    }
+    public class Problem {
+        String s;
+         class Inner {
+            void testMethod() {
+                s = "Set from Inner";
+            }
+        }
     }
 
 
